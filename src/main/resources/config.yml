@@ -1,0 +1,25 @@
+Update ticks: 100
+
+LightBlocks:
+  1:
+    hours:
+      - 0
+      - 500
+      - 1000
+      - 5000
+    materials:
+      - OAK_WOOD
+      - LANTERN
+      - ANVIL
+      - TNT
+  2:
+    hours:
+      - 1000
+      - 6000
+      - 15000
+      - 0
+    materials:
+      - OAK_WOOD
+      - SPRUCE_WOOD
+      - ACACIA_WOOD
+      - HONEY_BLOCK

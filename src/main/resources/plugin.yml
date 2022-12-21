@@ -1,0 +1,4 @@
+name: Lights
+version: '${project.version}'
+main: com.frocoa.lights.Lights
+api-version: 1.19

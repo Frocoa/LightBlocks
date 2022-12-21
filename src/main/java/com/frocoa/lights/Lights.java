@@ -13,15 +13,13 @@ import org.bukkit.Material;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Logger;
 
 public final class Lights extends JavaPlugin {
 
-    private List<LightBlock> lightBlocks = new ArrayList<>();
-    private List<LightBlockTemplate> templates = new ArrayList<>();
+    private final List<LightBlock> lightBlocks = new ArrayList<>();
+    private final Hashtable<String , LightBlockTemplate> templates = new Hashtable<>();
     private BukkitCommandManager manager;
 
     @Override
@@ -97,11 +95,11 @@ public final class Lights extends JavaPlugin {
             for (int i = 0 ; i < hours.size() ; i++) {
                 template.addSchedule(hours.get(i), Material.valueOf(materials.get(i)));
             }
-            templates.add(template);
+            templates.put(key, template);
         }
     }
 
-    public List<LightBlockTemplate> getTemplates() {
+    public Hashtable<String, LightBlockTemplate> getTemplates() {
         return templates;
     }
 }

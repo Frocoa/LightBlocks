@@ -1,7 +1,7 @@
 Update ticks: 100
 
 LightBlocks:
-  1:
+  anvtnt:
     hours:
       - 0
       - 500
@@ -12,7 +12,7 @@ LightBlocks:
       - LANTERN
       - ANVIL
       - TNT
-  2:
+  honoak:
     hours:
       - 1000
       - 6000

@@ -45,10 +45,16 @@ public class LightBlockCommand extends BaseCommand {
 
         ItemStack itemStack = new ItemStack(Material.REDSTONE_LAMP);
         NamespacedKey key = new NamespacedKey(controller, "lamp-key");
+
+        if (!controller.getTemplates().containsKey(args[0])) {
+            player.sendMessage(ChatColor.RED + "The light '" + args[0] +"' doesnt exist");
+            return;
+        }
+
         ItemMeta itemMeta = itemStack.getItemMeta();
         if (itemMeta != null) {
-            itemMeta.getPersistentDataContainer().set(key, PersistentDataType.INTEGER, Integer.valueOf(args[0]));
-            itemMeta.setDisplayName(ChatColor.BLUE + "Custom lamp " + args[0]);
+            itemMeta.getPersistentDataContainer().set(key, PersistentDataType.STRING, args[0]);
+            itemMeta.setDisplayName(ChatColor.BLUE + args[0]);
         }
         itemStack.setItemMeta(itemMeta);
         player.getInventory().addItem(itemStack);

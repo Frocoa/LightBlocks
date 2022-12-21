@@ -14,6 +14,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.util.Hashtable;
 import java.util.List;
 
 public class PlaceLight implements Listener {
@@ -33,10 +34,10 @@ public class PlaceLight implements Listener {
         if (itemMeta != null) {
             PersistentDataContainer container = itemMeta.getPersistentDataContainer();
 
-            if (container.has(key, PersistentDataType.INTEGER)) {
-                Integer id = container.get(key, PersistentDataType.INTEGER);
-                List<LightBlockTemplate> templates = plugin.getTemplates();
-                LightBlockTemplate template = templates.get(id);
+            if (container.has(key, PersistentDataType.STRING)) {
+                String template_key = container.get(key, PersistentDataType.STRING);
+                Hashtable<String, LightBlockTemplate> templates = plugin.getTemplates();
+                LightBlockTemplate template = templates.get(template_key);
                 LightBlock my_block = template.createLightBlock(event.getBlock().getLocation());
                 plugin.addLightBlock(my_block);
                 player.sendMessage("PLacing light...");

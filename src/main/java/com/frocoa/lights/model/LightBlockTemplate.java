@@ -10,6 +10,11 @@ public class LightBlockTemplate {
 
     private final List<Long> schedule = new ArrayList<>();
     private final List<Material> materials = new ArrayList<>();
+    private final String templateName;
+
+    public LightBlockTemplate(String templateName) {
+        this.templateName = templateName;
+    }
 
     public void addSchedule(Long time, Material material) {
         this.schedule.add(time);
@@ -17,7 +22,7 @@ public class LightBlockTemplate {
     }
 
     public LightBlock createLightBlock(Location location) {
-        return new LightBlock(location, schedule, materials);
+        return new LightBlock(location, schedule, materials, templateName);
     }
 
 

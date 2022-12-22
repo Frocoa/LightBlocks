@@ -26,13 +26,14 @@ public class LightBlockCommand extends BaseCommand {
     }
 
     @HelpCommand
-    @CommandPermission("blockbelt.use")
+    @CommandPermission("lightblock.use")
     @Description("Shows the help menu")
     public void sendInformation(CommandSender sender) {
         System.out.println("Hola");
     }
 
     @Subcommand("get")
+    @CommandPermission("lightblock.use")
     @Description("gets a light")
     public void onGet(CommandSender sender, String[] args) {
 
@@ -59,6 +60,4 @@ public class LightBlockCommand extends BaseCommand {
         itemStack.setItemMeta(itemMeta);
         player.getInventory().addItem(itemStack);
     }
-
-
 }

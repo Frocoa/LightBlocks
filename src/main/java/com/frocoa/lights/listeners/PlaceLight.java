@@ -3,7 +3,7 @@ package com.frocoa.lights.listeners;
 import com.frocoa.lights.model.LightBlock;
 import com.frocoa.lights.Lights;
 import com.frocoa.lights.model.LightBlockTemplate;
-import org.bukkit.Material;
+import com.frocoa.lights.sqlite.Database;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -15,7 +15,6 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Hashtable;
-import java.util.List;
 
 public class PlaceLight implements Listener {
 
@@ -42,6 +41,9 @@ public class PlaceLight implements Listener {
                 plugin.addLightBlock(my_block);
                 player.sendMessage("PLacing light...");
                 event.setCancelled(true);
+
+                Database db = plugin.getDb();
+                db.addLightBlockPLaced(my_block, player);
             }
         }
     }

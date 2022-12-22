@@ -9,7 +9,7 @@ LightBlocks:
       - 5000
     materials:
       - OAK_WOOD
-      - LANTERN
+      - REDSTONE_LAMP_ON
       - ANVIL
       - TNT
   honoak:

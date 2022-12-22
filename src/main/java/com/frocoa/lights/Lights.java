@@ -6,6 +6,8 @@ import com.frocoa.lights.listeners.PlaceLight;
 import com.frocoa.lights.listeners.RemoveLight;
 import com.frocoa.lights.model.LightBlock;
 import com.frocoa.lights.model.LightBlockTemplate;
+import com.frocoa.lights.sqlite.Database;
+import com.frocoa.lights.sqlite.SQLite;
 import com.frocoa.lights.utility.ConfigManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -18,9 +20,10 @@ import java.util.logging.Logger;
 
 public final class Lights extends JavaPlugin {
 
-    private final List<LightBlock> lightBlocks = new ArrayList<>();
+    private List<LightBlock> lightBlocks = new ArrayList<>();
     private final Hashtable<String , LightBlockTemplate> templates = new Hashtable<>();
     private BukkitCommandManager manager;
+    private Database db;
 
     @Override
     public void onEnable() {
@@ -40,6 +43,11 @@ public final class Lights extends JavaPlugin {
 
         // events
         registerEvents();
+
+        // database
+        db = new SQLite(this);
+        db.load();
+        this.lightBlocks = db.getLightBlocks();
     }
 
     @Override
@@ -91,7 +99,7 @@ public final class Lights extends JavaPlugin {
 
 
             // each loop is one scheduled material
-            LightBlockTemplate template = new LightBlockTemplate();
+            LightBlockTemplate template = new LightBlockTemplate(key);
             for (int i = 0 ; i < hours.size() ; i++) {
                 template.addSchedule(hours.get(i), Material.valueOf(materials.get(i)));
             }
@@ -101,5 +109,13 @@ public final class Lights extends JavaPlugin {
 
     public Hashtable<String, LightBlockTemplate> getTemplates() {
         return templates;
+    }
+
+    public LightBlockTemplate getTemplate(String name) {
+        return templates.get(name);
+    }
+
+    public Database getDb() {
+        return db;
     }
 }

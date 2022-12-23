@@ -2,6 +2,7 @@ package com.frocoa.lights.model;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 
 import java.util.List;
 
@@ -10,12 +11,14 @@ public class LightBlock {
     private final List<Long> schedule;
     private final List<BlockClosure> blocks;
     private final String templateName;
+    private final String player;
 
-    public LightBlock(Location location, List<Long> schedule, List<BlockClosure> blocks, String templateName) {
+    public LightBlock(Location location, List<Long> schedule, List<BlockClosure> blocks, String templateName, String player) {
         this.location = location;
         this.schedule = schedule;
         this.blocks = blocks;
         this.templateName = templateName;
+        this.player = player;
     }
 
     public Location getLocation() {
@@ -24,6 +27,10 @@ public class LightBlock {
 
     public String getTemplateName() {
         return templateName;
+    }
+
+    public String getPlayerName() {
+        return player;
     }
 
     public BlockClosure getCurrentClosure(Long current_time) {

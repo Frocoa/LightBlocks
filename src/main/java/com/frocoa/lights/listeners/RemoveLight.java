@@ -1,7 +1,9 @@
 package com.frocoa.lights.listeners;
 
 import com.frocoa.lights.Lights;
+import com.frocoa.lights.model.LightBlock;
 import com.frocoa.lights.sqlite.Database;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -29,11 +31,17 @@ public class RemoveLight implements Listener {
         Block block = event.getClickedBlock();
         Location location = Objects.requireNonNull(block).getLocation();
         if (!plugin.locationInList(location)) return;
+        Player player = event.getPlayer();
+        LightBlock lightBlock = plugin.getLightBlock(location);
+        if (!player.getName().equals(lightBlock.getPlayerName()) && !player.hasPermission("lightblock.break")) {
+            event.setCancelled(true);
+            player.sendMessage(ChatColor.RED + "THIS IS NOT YOUR LIGHT!");
+            return;
+        }
 
         block.setType(Material.AIR, false);
         plugin.removeLight(location);
 
-        Player player = event.getPlayer();
         player.sendMessage("Removing light...");
 
         Database db = plugin.getDb();

@@ -39,12 +39,12 @@ public class PlaceLight implements Listener {
                 Hashtable<String, LightBlockTemplate> templates = plugin.getTemplates();
 
                 if (!templates.containsKey(template_key)) {
-                    player.sendMessage(ChatColor.RED + "THIS LAMP DOESNT EXIST");
+                    player.sendMessage(ChatColor.RED + "THIS LIGHT DOESNT EXIST");
                     return;
                 }
 
                 LightBlockTemplate template = templates.get(template_key);
-                LightBlock my_block = template.createLightBlock(event.getBlock().getLocation());
+                LightBlock my_block = template.createLightBlock(event.getBlock().getLocation(), player.getName());
                 plugin.addLightBlock(my_block);
                 player.sendMessage("PLacing light...");
                 event.setCancelled(true);

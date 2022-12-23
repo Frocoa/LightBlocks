@@ -9,7 +9,6 @@ import com.frocoa.lights.model.LightBlockTemplate;
 import com.frocoa.lights.sqlite.Database;
 import com.frocoa.lights.sqlite.SQLite;
 import com.frocoa.lights.utility.ConfigManager;
-import com.google.common.collect.ImmutableList;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -76,6 +75,15 @@ public final class Lights extends JavaPlugin {
 
     public LightBlockTemplate getTemplate(String name) {
         return templates.get(name);
+    }
+
+    public LightBlock getLightBlock(Location location) {
+        for (LightBlock lightBlock : lightBlocks) {
+            if (lightBlock.getLocation().equals(location)) {
+                return lightBlock;
+            }
+        }
+        return null;
     }
 
     public Database getDb() {

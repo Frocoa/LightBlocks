@@ -2,6 +2,7 @@ package com.frocoa.lights.model;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +27,8 @@ public class LightBlockTemplate {
         this.blocks.add(new BlockClosure(material, lit));
     }
 
-    public LightBlock createLightBlock(Location location) {
-        return new LightBlock(location, schedule, blocks, templateName);
+    public LightBlock createLightBlock(Location location, String player) {
+        return new LightBlock(location, schedule, blocks, templateName, player);
     }
 
 

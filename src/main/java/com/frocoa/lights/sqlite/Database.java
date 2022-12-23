@@ -54,9 +54,10 @@ public abstract class Database {
             while (rs.next()) {
                 String templateName = rs.getString("template");
                 String locationString = rs.getString("location");
+                String player = rs.getString("player");
                 Location location = LocationString.parseStringToLocation(locationString);
                 LightBlockTemplate template = plugin.getTemplate(templateName);
-                LightBlock lightBlock = template.createLightBlock(location);
+                LightBlock lightBlock = template.createLightBlock(location, player);
                 lightBlockList.add(lightBlock);
             }
 

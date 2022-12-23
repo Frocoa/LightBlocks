@@ -24,9 +24,7 @@ public abstract class Database {
     public Database(Lights instance){
         plugin = instance;
     }
-
     public abstract Connection getSQLConnection();
-
     public abstract void load();
 
     public void initialize(){
@@ -37,16 +35,14 @@ public abstract class Database {
             close(ps,rs);
 
         } catch (SQLException ex) {
-            plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
+            plugin.getLogger().log(Level.SEVERE, "Unable to retrieve connection", ex);
         }
     }
 
-    // These are the methods you can use to get things out of your database. You of course can make new ones to return different things in the database.
-    // This returns the number of people the player killed.
     public List<LightBlock> getLightBlocks() {
         Connection conn = null;
         PreparedStatement ps = null;
-        ResultSet rs = null;
+        ResultSet rs;
         try {
             conn = getSQLConnection();
             ps = conn.prepareStatement("SELECT template, location FROM " + table + ";");
@@ -80,13 +76,12 @@ public abstract class Database {
         return new ArrayList<>();
     }
 
-    // Now we need methods to save things to the database
     public void addLightBlockPLaced(LightBlock lightBlock, Player player) {
         Connection conn = null;
         PreparedStatement ps = null;
         try {
             conn = getSQLConnection();
-            ps = conn.prepareStatement("REPLACE INTO " + table + " (location,player,template) VALUES(?,?,?)"); // IMPORTANT. In SQLite class, We made 3 colums. player, Kills, Total.
+            ps = conn.prepareStatement("REPLACE INTO " + table + " (location,player,template) VALUES(?,?,?)");
 
             ps.setString(1, LocationString.parseLocationToString(lightBlock.getLocation()));
             ps.setString(2, player.getName().toLowerCase());
@@ -107,14 +102,13 @@ public abstract class Database {
         }
     }
 
-    // Now we need methods to save things to the database
     public void removeLightBlockPlaced(Location location) {
         Connection conn = null;
         PreparedStatement ps = null;
         try {
             conn = getSQLConnection();
             String locationString = LocationString.parseLocationToString(location);
-            ps = conn.prepareStatement("DELETE FROM " + table + " WHERE location='" + locationString + "';"); // IMPORTANT. In SQLite class, We made 3 colums. player, Kills, Total.
+            ps = conn.prepareStatement("DELETE FROM " + table + " WHERE location='" + locationString + "';");
             ps.executeUpdate();
         } catch (SQLException ex) {
             plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
@@ -129,7 +123,6 @@ public abstract class Database {
             }
         }
     }
-
 
     public void close(PreparedStatement ps,ResultSet rs){
         try {

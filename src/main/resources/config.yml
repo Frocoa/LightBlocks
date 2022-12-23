@@ -1,4 +1,6 @@
-Update ticks: 100
+Update ticks: 20
+Apply physics: false
+Apply lit physics: false
 
 LightBlocks:
   anvtnt:

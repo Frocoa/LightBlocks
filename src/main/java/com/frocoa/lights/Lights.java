@@ -9,12 +9,14 @@ import com.frocoa.lights.model.LightBlockTemplate;
 import com.frocoa.lights.sqlite.Database;
 import com.frocoa.lights.sqlite.SQLite;
 import com.frocoa.lights.utility.ConfigManager;
+import com.google.common.collect.ImmutableList;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Lightable;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -27,6 +29,9 @@ public final class Lights extends JavaPlugin {
     private final Hashtable<String , LightBlockTemplate> templates = new Hashtable<>();
     private BukkitCommandManager manager;
     private Database db;
+    private boolean physics;
+    private boolean litPhysics;
+    private long ticks;
 
     @Override
     public void onEnable() {
@@ -38,7 +43,7 @@ public final class Lights extends JavaPlugin {
         // Plugin startup logic
         saveDefaultConfig();
         createLightTemplates();
-        Bukkit.getScheduler().runTaskTimer(this, this::execute, 100, 100);
+        Bukkit.getScheduler().runTaskTimer(this, this::updateLights, ticks, ticks);
 
         // commands
         manager = new BukkitCommandManager(this);
@@ -47,43 +52,59 @@ public final class Lights extends JavaPlugin {
         // events
         registerEvents();
 
+        loadConfig();
+
         // database
         db = new SQLite(this);
         db.load();
         this.lightBlocks = db.getLightBlocks();
     }
 
-    @Override
-    public void onDisable() {
-        // Plugin shutdown logic
-    }
-
     private void registerCommands() {
         manager.registerCommand(new LightBlockCommand(this, getLogger()));
+        manager.getCommandCompletions().registerCompletion("lights", c -> getTemplates().keySet());
     }
 
     private void registerEvents() {
-        // It's better to have listeners in a separate class, for organization.
         Bukkit.getPluginManager().registerEvents(new PlaceLight(this), this);
         Bukkit.getPluginManager().registerEvents(new RemoveLight(this), this);
     }
 
-    private void execute() {
+    public Hashtable<String, LightBlockTemplate> getTemplates() {
+        return templates;
+    }
+
+    public LightBlockTemplate getTemplate(String name) {
+        return templates.get(name);
+    }
+
+    public Database getDb() {
+        return db;
+    }
+
+    private void updateLights() {
         long time = Bukkit.getWorlds().get(0).getTime();
         for (LightBlock lightBlock : lightBlocks) {
             Location location = lightBlock.getLocation();
             Material material = lightBlock.getCurrentMaterial(time);
             Block block = location.getBlock();
-            block.setType(material);
+            block.setType(material, physics);
 
             if (lightBlock.getCurrentLit(time)) {
                 BlockData data = block.getBlockData();
                 if (data instanceof Lightable) {
                     ((Lightable) data).setLit(true);
-                    block.setBlockData(data);
+                    block.setBlockData(data, litPhysics);
                 }
             }
         }
+    }
+
+    public void loadConfig() {
+        FileConfiguration config = getConfig();
+        ticks = config.getLong("Update ticks");
+        physics = config.getBoolean("Apply physics");
+        litPhysics = config.getBoolean("Apply lit physics");
     }
 
     public void addLightBlock (LightBlock lightBlock) {
@@ -123,17 +144,5 @@ public final class Lights extends JavaPlugin {
             }
             templates.put(key, template);
         }
-    }
-
-    public Hashtable<String, LightBlockTemplate> getTemplates() {
-        return templates;
-    }
-
-    public LightBlockTemplate getTemplate(String name) {
-        return templates.get(name);
-    }
-
-    public Database getDb() {
-        return db;
     }
 }

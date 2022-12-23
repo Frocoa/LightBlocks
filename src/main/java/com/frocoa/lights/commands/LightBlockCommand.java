@@ -14,7 +14,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.logging.Logger;
 
-@CommandAlias("lb|lightblock")
+@CommandAlias("sb|lightblock|scheduledblocks")
 public class LightBlockCommand extends BaseCommand {
 
     private final Lights controller;
@@ -32,9 +32,10 @@ public class LightBlockCommand extends BaseCommand {
         System.out.println("Hola");
     }
 
-    @Subcommand("get")
+    @Subcommand("give")
     @CommandPermission("lightblock.use")
-    @Description("gets a light")
+    @CommandCompletion("@lights")
+    @Description("gives the player a light")
     public void onGet(CommandSender sender, String[] args) {
 
         if(!(sender instanceof Player)) {

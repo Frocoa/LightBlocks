@@ -30,14 +30,13 @@ public class RemoveLight implements Listener {
         Location location = Objects.requireNonNull(block).getLocation();
         if (!plugin.locationInList(location)) return;
 
-        block.setType(Material.AIR);
+        block.setType(Material.AIR, false);
         plugin.removeLight(location);
 
         Player player = event.getPlayer();
         player.sendMessage("Removing light...");
 
         Database db = plugin.getDb();
-        System.out.println(db.getLightBlocks());
         db.removeLightBlockPlaced(location);
     }
 }

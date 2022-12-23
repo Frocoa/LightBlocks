@@ -12,6 +12,9 @@ import com.frocoa.lights.utility.ConfigManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Lightable;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -34,7 +37,7 @@ public final class Lights extends JavaPlugin {
 
         // Plugin startup logic
         saveDefaultConfig();
-        createLightBLocksList();
+        createLightTemplates();
         Bukkit.getScheduler().runTaskTimer(this, this::execute, 100, 100);
 
         // commands
@@ -66,10 +69,20 @@ public final class Lights extends JavaPlugin {
     }
 
     private void execute() {
+        long time = Bukkit.getWorlds().get(0).getTime();
         for (LightBlock lightBlock : lightBlocks) {
             Location location = lightBlock.getLocation();
-            Material material = lightBlock.getCurrentMaterial(Bukkit.getWorlds().get(0).getTime());
-            location.getBlock().setType(material);
+            Material material = lightBlock.getCurrentMaterial(time);
+            Block block = location.getBlock();
+            block.setType(material);
+
+            if (lightBlock.getCurrentLit(time)) {
+                BlockData data = block.getBlockData();
+                if (data instanceof Lightable) {
+                    ((Lightable) data).setLit(true);
+                    block.setBlockData(data);
+                }
+            }
         }
     }
 
@@ -88,8 +101,7 @@ public final class Lights extends JavaPlugin {
         lightBlocks.removeIf(lightBlock -> lightBlock.getLocation().equals(location));
     }
 
-    public void createLightBLocksList() {
-        List<LightBlock> lightBlocks = new ArrayList<>();
+    public void createLightTemplates() {
         Set<String> keys = ConfigManager.getLightBlocks(getConfig()).getKeys(false);
 
         // each loop is one LightBlock
@@ -97,11 +109,17 @@ public final class Lights extends JavaPlugin {
             List<Long> hours = getConfig().getLongList("LightBlocks." + key + ".hours");
             List<String> materials = getConfig().getStringList("LightBlocks." + key + ".materials");
 
-
             // each loop is one scheduled material
             LightBlockTemplate template = new LightBlockTemplate(key);
             for (int i = 0 ; i < hours.size() ; i++) {
-                template.addSchedule(hours.get(i), Material.valueOf(materials.get(i)));
+                String material = materials.get(i);
+                String[] array = material.split(" ");
+                boolean lit = false;
+                if (array.length >= 2) {
+                    if (array[1].equalsIgnoreCase("lit")) lit = true;
+                }
+
+                template.addSchedule(hours.get(i), Material.valueOf(array[0]), lit);
             }
             templates.put(key, template);
         }

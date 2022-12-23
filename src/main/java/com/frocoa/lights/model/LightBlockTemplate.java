@@ -9,7 +9,7 @@ import java.util.List;
 public class LightBlockTemplate {
 
     private final List<Long> schedule = new ArrayList<>();
-    private final List<Material> materials = new ArrayList<>();
+    private final List<BlockClosure> blocks = new ArrayList<>();
     private final String templateName;
 
     public LightBlockTemplate(String templateName) {
@@ -18,11 +18,16 @@ public class LightBlockTemplate {
 
     public void addSchedule(Long time, Material material) {
         this.schedule.add(time);
-        this.materials.add(material);
+        this.blocks.add(new BlockClosure(material, false));
+    }
+
+    public void addSchedule(Long time, Material material, boolean lit) {
+        this.schedule.add(time);
+        this.blocks.add(new BlockClosure(material, lit));
     }
 
     public LightBlock createLightBlock(Location location) {
-        return new LightBlock(location, schedule, materials, templateName);
+        return new LightBlock(location, schedule, blocks, templateName);
     }
 
 

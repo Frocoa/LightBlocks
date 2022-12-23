@@ -4,6 +4,7 @@ import com.frocoa.lights.model.LightBlock;
 import com.frocoa.lights.Lights;
 import com.frocoa.lights.model.LightBlockTemplate;
 import com.frocoa.lights.sqlite.Database;
+import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -36,6 +37,12 @@ public class PlaceLight implements Listener {
             if (container.has(key, PersistentDataType.STRING)) {
                 String template_key = container.get(key, PersistentDataType.STRING);
                 Hashtable<String, LightBlockTemplate> templates = plugin.getTemplates();
+
+                if (!templates.containsKey(template_key)) {
+                    player.sendMessage(ChatColor.RED + "THIS LAMP DOESNT EXIST");
+                    return;
+                }
+
                 LightBlockTemplate template = templates.get(template_key);
                 LightBlock my_block = template.createLightBlock(event.getBlock().getLocation());
                 plugin.addLightBlock(my_block);
